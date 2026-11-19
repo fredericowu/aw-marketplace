@@ -1449,8 +1449,8 @@
       "name": "Ollama",
       "description": "Run local AI models and chat privately through Open WebUI, with persistent models and workspace runtime controls.",
       "repo": "tekflox/aw-app-ollama",
-      "ref": "v0.1.0",
-      "version": "0.1.0",
+      "ref": "v0.1.1",
+      "version": "0.1.1",
       "icon": "plug",
       "category": "dev-tools",
       "tags": [
