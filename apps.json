@@ -250,8 +250,8 @@
       "name": "MCP Tools",
       "description": "A blank, configurable placeholder for workspace MCP upstreams.",
       "repo": "fredericowu/aw-app-mcp-tools",
-      "ref": "v0.13.0",
-      "version": "0.13.0",
+      "ref": "v0.14.0",
+      "version": "0.14.0",
       "icon": "plug",
       "category": "dev-tools",
       "tags": [
