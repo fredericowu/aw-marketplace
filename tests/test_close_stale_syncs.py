@@ -63,7 +63,7 @@ def test_closes_pr_whose_version_is_already_in_master(monkeypatch):
     }
     fake = _FakeResponses(monkeypatch, routes)
 
-    closed = close_stale_syncs("tok", "tekflox/aw-marketplace")
+    closed = close_stale_syncs("tok", "fredericowu/aw-marketplace")
 
     assert closed == [{"number": 70, "app_id": "mcp-gateway",
                         "pr_version": (0, 5, 3), "master_version": (0, 6, 0)}]
@@ -83,7 +83,7 @@ def test_leaves_pr_alone_when_it_is_still_ahead_of_master(monkeypatch):
     }
     _FakeResponses(monkeypatch, routes)
 
-    closed = close_stale_syncs("tok", "tekflox/aw-marketplace")
+    closed = close_stale_syncs("tok", "fredericowu/aw-marketplace")
 
     assert closed == []
 
@@ -98,6 +98,6 @@ def test_ignores_non_sync_branches(monkeypatch):
     }
     _FakeResponses(monkeypatch, routes)
 
-    closed = close_stale_syncs("tok", "tekflox/aw-marketplace")
+    closed = close_stale_syncs("tok", "fredericowu/aw-marketplace")
 
     assert closed == []

@@ -175,7 +175,7 @@ def report_drift(token: str, repo: str, drifted: list[dict]) -> dict:
 
 def main() -> int:
     token = os.environ["GH_TOKEN"]
-    repo = os.environ.get("GH_REPOSITORY", "tekflox/aw-marketplace")
+    repo = os.environ.get("GH_REPOSITORY", "fredericowu/aw-marketplace")
     catalog_path = os.environ.get("CATALOG_PATH", "apps.json")
 
     catalog = json.load(open(catalog_path))

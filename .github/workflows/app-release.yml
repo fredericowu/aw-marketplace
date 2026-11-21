@@ -3,7 +3,7 @@ name: App release (reusable)
 # Called by a ~10-line caller workflow in each aw-app-* repo via:
 #   jobs:
 #     release:
-#       uses: tekflox/aw-marketplace/.github/workflows/app-release.yml@v1
+#       uses: fredericowu/aw-marketplace/.github/workflows/app-release.yml@v1
 #       secrets: inherit
 #
 # Referenced by a MOVING tag (@v1) or @main so bumping this workflow
@@ -19,14 +19,14 @@ on:
       catalog_repo:
         description: >-
           Catalog repo to sync the entry into. Defaults to the PUBLIC
-          tekflox/aw-marketplace; a private app passes
+          fredericowu/aw-marketplace; a private app passes
           tekflox/aw-marketplace-private. Only the catalog's apps.json comes
           from here — the sync/bump scripts and the schema always come from
-          tekflox/aw-marketplace, so a private catalog carries nothing but
+          fredericowu/aw-marketplace, so a private catalog carries nothing but
           its own apps.json.
         type: string
         required: false
-        default: "tekflox/aw-marketplace"
+        default: "fredericowu/aw-marketplace"
     secrets:
       MARKETPLACE_SYNC_TOKEN:
         description: "PAT (repo scope) used to push/PR into the catalog repo."
@@ -113,7 +113,7 @@ jobs:
                "secret). A repo outside the tekflox org has no org secrets to" \
                "inherit, so 'secrets: inherit' alone delivers nothing." \
                "Smallest safe shape: a fine-grained PAT scoped to" \
-               "tekflox/aw-marketplace (Contents: write, Pull requests: write)" \
+               "fredericowu/aw-marketplace (Contents: write, Pull requests: write)" \
                "plus ${APP_REPO} (Contents: write). Minting it is the repo" \
                "owner's decision, not CI's."
           exit 1
@@ -140,7 +140,7 @@ jobs:
           APP_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          if [ "$CATALOG_REPO" != "tekflox/aw-marketplace" ]; then
+          if [ "$CATALOG_REPO" != "fredericowu/aw-marketplace" ] && [ "$CATALOG_REPO" != "tekflox/aw-marketplace" ]; then
             echo "Target is ${CATALOG_REPO} (not the public catalog) — nothing to check."
             exit 0
           fi
@@ -166,7 +166,7 @@ jobs:
       - name: Checkout aw-marketplace scripts + schema
         uses: actions/checkout@v7
         with:
-          repository: tekflox/aw-marketplace
+          repository: fredericowu/aw-marketplace
           path: _marketplace
           token: ${{ secrets.MARKETPLACE_SYNC_TOKEN }}
 
