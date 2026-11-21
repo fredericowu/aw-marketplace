@@ -498,8 +498,8 @@
       "name": "Tunnel",
       "description": "Named local TCP endpoints that forward to a destination, so consumers point at 127.0.0.1:<port> and never learn what is on the other side. Two destination kinds: a custom IP:port (a plain TCP proxy, working today) and a linked aw-remote-host (dialled BY that machine over the /link WebSocket it already holds open, so the workspace reaches its loopback and LAN with no inbound port and no VPN). Each tunnel chooses its own bind address, which is what decides who may use it.",
       "repo": "fredericowu/aw-app-tunnel",
-      "ref": "v0.13.0",
-      "version": "0.13.0",
+      "ref": "v0.14.0",
+      "version": "0.14.0",
       "icon": "plug",
       "category": "dev-tools",
       "tags": [
@@ -645,8 +645,8 @@
       "name": "SSH",
       "description": "Contributes `aw-workspace-cli ssh` and `aw-workspace-cli rsync`: the real tools, with the private key or password fetched from the workspace vault (aw-app-secrets) and injected into an ephemeral ssh-agent, so the caller \u2014 usually an agent \u2014 connects without ever seeing the credential. Arguments are ssh's/rsync's own; this app only adds `--aw-*` flags.",
       "repo": "fredericowu/aw-app-ssh",
-      "ref": "v0.13.0",
-      "version": "0.13.0",
+      "ref": "v0.15.0",
+      "version": "0.15.0",
       "icon": "plug",
       "category": "dev-tools",
       "tags": [
@@ -1402,8 +1402,8 @@
       "name": "Workspace Agent",
       "description": "Browse every agent this workspace can dispatch, see who is running right now, and open sessions without leaving the workspace \u2014 a command-center view over your Agents Platform fleet.",
       "repo": "fredericowu/aw-app-workspace-agent",
-      "ref": "v0.6.0",
-      "version": "0.6.0",
+      "ref": "v0.7.0",
+      "version": "0.7.0",
       "icon": "plug",
       "category": "dev-tools",
       "tags": [
@@ -1445,8 +1445,8 @@
       "name": "UC PhD Projects",
       "description": "Explore every research project at CISUC / UC DEI \u2014 400 of them \u2014 as interactive charts and a searchable catalogue. See which research groups run what, where the money comes from and goes, how project starts are spread over the years, who coordinates the most, and the biggest projects in each group. Open any project for its synopsis, budgets, partners, keywords, people and every field the site publishes about it.",
       "repo": "fredericowu/aw-app-uc-phd",
-      "ref": "v0.33.0",
-      "version": "0.33.0",
+      "ref": "v0.34.0",
+      "version": "0.34.0",
       "icon": "plug",
       "category": "dev-tools",
       "tags": [
