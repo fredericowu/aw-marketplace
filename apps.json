@@ -250,8 +250,8 @@
       "name": "MCP Tools",
       "description": "A blank, configurable placeholder for workspace MCP upstreams.",
       "repo": "tekflox/aw-app-mcp-tools",
-      "ref": "v0.12.0",
-      "version": "0.12.0",
+      "ref": "v0.13.0",
+      "version": "0.13.0",
       "icon": "plug",
       "category": "dev-tools",
       "tags": [
