@@ -70,8 +70,8 @@ jobs:
     # personal-account app would have to remember to pass it.
     #
     # A repo outside the org that HAS registered its own bare-metal runner
-    # opts in with the repo variable AW_RUNNER=aw-baremetal (set by
-    # aw-automation/scripts/register-repo-runner.sh); `vars` inside a called
+    # opts in with the repo variable AW_RUNNER=aw-baremetal (set when the
+    # repo registers its own runner); `vars` inside a called
     # workflow is the CALLER's. No variable, no queue-forever.
     #
     # Every step in this job is network + Python (checkout, setup-python, pip,
@@ -392,7 +392,7 @@ jobs:
         # other owner uses [self-hosted, aw-baremetal] ONLY when its repo sets
         # the variable AW_RUNNER=aw-baremetal (org runner groups cannot be
         # shared with a personal account, so that repo needs its own runner,
-        # registered by aw-automation/scripts/register-repo-runner.sh, which
+        # registered out of band, which
         # also sets the variable). Without it the job falls to ubuntu-24.04
         # instead of queueing forever.
         if: ${{ steps.sync.outputs.changed == 'true' && (startsWith(github.repository, 'tekflox/') || startsWith(github.repository, 'fredericowu/')) }}
