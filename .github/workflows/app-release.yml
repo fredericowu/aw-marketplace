@@ -381,7 +381,13 @@ jobs:
           PY
 
       - name: Auto-merge first-party TekFlox sync PRs
-        if: ${{ steps.sync.outputs.changed == 'true' && startsWith(github.repository, 'tekflox/') }}
+        # Owner predicate: tekflox/* and fredericowu/* (the planned destination
+        # of a tekflox -> fredericowu transfer) are both first-party. Note the
+        # runs-on predicates above deliberately stay tekflox-only: org runner
+        # groups cannot be shared with a personal account, so fredericowu/*
+        # callers must keep falling through to ubuntu-24.04 before and after a
+        # transfer (a bare-metal label there would queue forever).
+        if: ${{ steps.sync.outputs.changed == 'true' && (startsWith(github.repository, 'tekflox/') || startsWith(github.repository, 'fredericowu/')) }}
         env:
           GH_TOKEN: ${{ secrets.MARKETPLACE_SYNC_TOKEN }}
         run: |
