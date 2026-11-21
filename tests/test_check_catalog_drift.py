@@ -159,7 +159,7 @@ def test_opens_one_issue_listing_every_drifted_app(monkeypatch):
          "repo_version": "0.6.0"},
     ]
 
-    assert report_drift("tok", "tekflox/aw-marketplace", drifted) == {
+    assert report_drift("tok", "fredericowu/aw-marketplace", drifted) == {
         "action": "opened", "number": 42}
     posts = [c for c in fake.calls if c[0] == "POST"]
     assert len(posts) == 1, "one issue for all drifted apps, never one per app"
@@ -175,7 +175,7 @@ def test_updates_the_existing_issue_instead_of_opening_a_second(monkeypatch):
     drifted = [{"id": "a", "repo": "tekflox/aw-app-a", "catalog_version": "1.0.0",
                 "repo_version": "1.0.1"}]
 
-    assert report_drift("tok", "tekflox/aw-marketplace", drifted) == {
+    assert report_drift("tok", "fredericowu/aw-marketplace", drifted) == {
         "action": "updated", "number": 7}
     assert not [c for c in fake.calls if c[0] == "POST"]
 
@@ -191,7 +191,7 @@ def test_ignores_a_pull_request_that_shares_the_issue_title(monkeypatch):
     drifted = [{"id": "a", "repo": "tekflox/aw-app-a", "catalog_version": "1.0.0",
                 "repo_version": "1.0.1"}]
 
-    assert report_drift("tok", "tekflox/aw-marketplace", drifted)["number"] == 10
+    assert report_drift("tok", "fredericowu/aw-marketplace", drifted)["number"] == 10
     assert not [c for c in fake.calls if c[0] == "PATCH"]
 
 
@@ -202,7 +202,7 @@ def test_closes_the_issue_once_nothing_is_behind(monkeypatch):
         ("PATCH", "/issues/7"): {"number": 7},
     })
 
-    assert report_drift("tok", "tekflox/aw-marketplace", []) == {
+    assert report_drift("tok", "fredericowu/aw-marketplace", []) == {
         "action": "closed", "number": 7}
     assert [c[2] for c in fake.calls if c[0] == "PATCH"] == [{"state": "closed"}]
 
@@ -210,7 +210,7 @@ def test_closes_the_issue_once_nothing_is_behind(monkeypatch):
 def test_no_drift_and_no_existing_issue_writes_nothing(monkeypatch):
     fake = _FakeResponses(monkeypatch, {("GET", "/issues?state=open"): []})
 
-    assert report_drift("tok", "tekflox/aw-marketplace", []) == {"action": "none"}
+    assert report_drift("tok", "fredericowu/aw-marketplace", []) == {"action": "none"}
     assert [c[0] for c in fake.calls] == ["GET"]
 
 

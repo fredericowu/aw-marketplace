@@ -48,7 +48,7 @@ view.
 
 Each `aw-app-*` repo has a ~10-line caller workflow
 (`.github/workflows/release.yml`) that calls this repo's reusable
-`app-release.yml` via `uses: tekflox/aw-marketplace/.github/workflows/app-release.yml@main`
+`app-release.yml` via `uses: fredericowu/aw-marketplace/.github/workflows/app-release.yml@main`
 + `secrets: inherit`. Bumping the reusable workflow here propagates to every
 caller's next run — no per-repo edits needed. On push to the app's default
 branch it: bumps semver in `aw-app.json` (minor default, patch if every
@@ -71,7 +71,7 @@ reach *private* repos, so those need a repo-level secret too. For an app repo
 owned by a **personal account** it must be a **repo-level** secret on that
 repo: there are no org secrets to inherit, so `secrets: inherit` alone delivers
 nothing. The smallest safe shape there is a fine-grained PAT scoped to
-`tekflox/aw-marketplace` (Contents: write, Pull requests: write) plus the app
+`fredericowu/aw-marketplace` (Contents: write, Pull requests: write) plus the app
 repo (Contents: write) — not a full-scope `admin:org`/`delete_repo` PAT. Until
 it exists, the release fails at `app-release.yml`'s first step with an error
 naming the repo and the secret, instead of a cryptic 401 further down.

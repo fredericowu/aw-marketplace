@@ -111,7 +111,7 @@ def close_stale_syncs(token: str, repo: str) -> list[dict]:
 
 def main() -> int:
     token = os.environ["GH_TOKEN"]
-    repo = os.environ.get("GH_REPOSITORY", "tekflox/aw-marketplace")
+    repo = os.environ.get("GH_REPOSITORY", "fredericowu/aw-marketplace")
     closed = close_stale_syncs(token, repo)
     for c in closed:
         print(f"closed PR #{c['number']} ({c['app_id']}): "
