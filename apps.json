@@ -1463,6 +1463,28 @@
         "memory": "low",
         "disk": "low"
       }
+    },
+    {
+      "id": "cdp-pilot",
+      "name": "CDP Pilot",
+      "description": "QA pilot for a configured Electron app on a linked remote host: launch a signature-verified build with a disposable profile and a loopback-only ephemeral debug port, inspect its DOM, click, type, press keys, screenshot, and close, over the Chrome DevTools Protocol with no macOS TCC permissions. Named-target allowlist (default empty); no arbitrary JavaScript, raw CDP, profile copies or host/path/port parameters.",
+      "repo": "fredericowu/aw-app-cdp-pilot",
+      "ref": "v0.2.0",
+      "version": "0.2.0",
+      "icon": "plug",
+      "category": "dev-tools",
+      "tags": [
+        "cdp",
+        "pilot"
+      ],
+      "has_config": true,
+      "bootstrap": false,
+      "publisher": "TekFlox",
+      "resource_estimate": {
+        "cpu": "low",
+        "memory": "low",
+        "disk": "low"
+      }
     }
   ]
 }
