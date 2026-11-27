@@ -196,3 +196,88 @@ def test_mcp_indexing_entry_missing_required_schema_keys_fails(tmp_path):
     manifest_path = make_indexing_app(tmp_path, [{"tool": "search_graph", "call": True}])
     result = run_validate(manifest_path)
     assert result.returncode == 1
+
+
+def make_settings_app(tmp_path, *, body_type="component", mode="component",
+                      bundle=True, slots=("core.window.body:fixture-app.settings",),
+                      permissions=("ui:code",), window="fixture-app.settings"):
+    (tmp_path / "ui" / "dist").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "ui" / "dist" / "x.js").write_text("")
+    frontend = {"mode": mode, "slots": list(slots)}
+    if bundle:
+        frontend["bundle"] = "ui/dist/x.js"
+    panel = {"id": "fixture-app.settings"}
+    if window is not None:
+        panel["window"] = window
+    manifest = {
+        "manifest_version": 1,
+        "id": "fixture-app",
+        "name": "Fixture App",
+        "version": "0.1.0",
+        "tier": "inprocess",
+        "runtime": {"python": ">=3.11", "entrypoint": "fixture:Plugin"},
+        "permissions": list(permissions),
+        "contributes": {
+            "windows": [{"id": "fixture-app.settings", "title": "Settings",
+                         "body": ({"type": "declarative", "spec": "window.json"}
+                                  if body_type == "declarative"
+                                  else {"type": body_type})}],
+            "settings_panels": [panel],
+            "frontend": frontend,
+        },
+    }
+    (tmp_path / "window.json").write_text(json.dumps({"regions": []}))
+    manifest_path = tmp_path / "aw-app.json"
+    manifest_path.write_text(json.dumps(manifest))
+    return manifest_path
+
+
+def _fails(tmp_path, needle="fixture-app.settings", **kw):
+    result = run_validate(make_settings_app(tmp_path, **kw))
+    assert result.returncode == 1, result.stderr
+    assert needle in result.stderr
+    return result
+
+
+def test_component_settings_window_with_all_four_legs_is_accepted(tmp_path):
+    result = run_validate(make_settings_app(tmp_path))
+    assert result.returncode == 0, result.stderr
+
+
+def test_component_settings_window_missing_slot_fails(tmp_path):
+    _fails(tmp_path, slots=())
+
+
+def test_component_settings_window_slot_for_other_window_fails(tmp_path):
+    _fails(tmp_path, slots=("core.window.body:other.window",))
+
+
+def test_component_settings_window_frontend_mode_not_component_fails(tmp_path):
+    _fails(tmp_path, mode="iframe")
+
+
+def test_component_settings_window_without_bundle_fails(tmp_path):
+    _fails(tmp_path, bundle=False)
+
+
+def test_component_settings_window_without_ui_code_fails(tmp_path):
+    _fails(tmp_path, permissions=())
+
+
+def test_managed_app_settings_window_fails_even_with_matching_slot(tmp_path):
+    _fails(tmp_path, body_type="managed_app")
+
+
+def test_settings_panel_unknown_window_fails(tmp_path):
+    _fails(tmp_path, window="nope.window")
+
+
+def test_declarative_settings_window_passes_without_component_legs(tmp_path):
+    result = run_validate(make_settings_app(
+        tmp_path, body_type="declarative", mode="iframe", slots=(), permissions=()))
+    assert result.returncode == 0, result.stderr
+
+
+def test_settings_panel_without_window_key_passes(tmp_path):
+    result = run_validate(make_settings_app(tmp_path, window=None))
+    assert result.returncode == 0, result.stderr

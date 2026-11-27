@@ -31,9 +31,11 @@ cannot, and that every one of them has shipped at least once:
    never appears. ``aw-app-proxy`` has shipped a data-bound ``table`` widget
    for months that has never rendered.
 3. **Settings panels that can't render** — ``contributes.settings_panels``
-   only works with a **declarative** window (AppConfigBody reads
-   ``body.spec_data``). Pointing one at a ``component`` window yields an empty
-   Settings pane with no error anywhere.
+   works with a **declarative** window (AppConfigBody reads ``body.spec_data``)
+   or a **component** window that has frontend mode ``component``, a declared
+   bundle, the exact ``core.window.body:<window-id>`` slot and ``ui:code``.
+   Anything else (managed_app, a component window missing a leg) yields an
+   empty Settings pane with no error anywhere.
 """
 import json
 import sys
@@ -257,19 +259,45 @@ for win in windows:
     for region in spec.get("regions", []) or []:
         check_widgets(region.get("widgets"), f"{body['spec']} region {region.get('id')!r}")
 
-# ── 3. settings panels must point at a declarative window ──────────────────
+# ── 3. settings panels must point at a window the Settings pane can render ──
+#
+# A declarative window always renders (AppConfigBody reads body.spec_data). A
+# `component` window renders only when the shell can mount a body in
+# `core.window.body:<window-id>`: frontend mode `component`, a declared bundle,
+# the exact slot, and `ui:code` (without it the bundle is refused and the pane
+# is empty). Any other body type (managed_app, ...) never renders.
 
 window_ids = {w["id"] for w in windows}
+window_body_type = {w["id"]: (w.get("body", {}) or {}).get("type") for w in windows}
 for panel in contributes.get("settings_panels", []) or []:
     target = panel.get("window")
     if not target:
         continue
+    pid = panel["id"]
     if target not in window_ids:
-        fail(f"settings_panel {panel['id']!r} points at unknown window {target!r}")
-    elif target not in declarative_window_ids:
-        fail(f"settings_panel {panel['id']!r} points at window {target!r}, which "
-             f"is not `declarative`. The Settings pane reads body.spec_data and "
-             f"will render EMPTY for a component/managed_app window.")
+        fail(f"settings_panel {pid!r} points at unknown window {target!r}")
+    elif target in declarative_window_ids:
+        continue
+    elif window_body_type[target] != "component":
+        fail(f"settings_panel {pid!r} points at window {target!r}, whose body "
+             f"type is {window_body_type[target]!r}. The Settings pane renders "
+             f"only `declarative` or `component` windows; anything else "
+             f"renders EMPTY.")
+    else:
+        slot = f"core.window.body:{target}"
+        if frontend.get("mode") != "component":
+            fail(f"settings_panel {pid!r} points at component window {target!r} "
+                 f"but contributes.frontend.mode is not `component`.")
+        if not bundle:
+            fail(f"settings_panel {pid!r} points at component window {target!r} "
+                 f"but contributes.frontend.bundle is not declared.")
+        if slot not in (frontend.get("slots") or []):
+            fail(f"settings_panel {pid!r} points at component window {target!r} "
+                 f"but contributes.frontend.slots lacks {slot!r}.")
+        if "ui:code" not in (manifest.get("permissions") or []):
+            fail(f"settings_panel {pid!r} points at component window {target!r} "
+                 f"but the manifest lacks the `ui:code` permission, so the "
+                 f"bundle is refused and the pane renders EMPTY.")
 
 # ── report ──────────────────────────────────────────────────────────────────
 
