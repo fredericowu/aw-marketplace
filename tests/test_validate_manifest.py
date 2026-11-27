@@ -196,3 +196,44 @@ def test_mcp_indexing_entry_missing_required_schema_keys_fails(tmp_path):
     manifest_path = make_indexing_app(tmp_path, [{"tool": "search_graph", "call": True}])
     result = run_validate(manifest_path)
     assert result.returncode == 1
+
+
+def make_component_settings_app(tmp_path, slots):
+    frontend = {"mode": "component", "bundle": "ui/dist/x.js"}
+    if slots is not None:
+        frontend["slots"] = slots
+    (tmp_path / "ui" / "dist").mkdir(parents=True)
+    (tmp_path / "ui" / "dist" / "x.js").write_text("")
+    manifest = {
+        "manifest_version": 1,
+        "id": "fixture-app",
+        "name": "Fixture App",
+        "version": "0.1.0",
+        "tier": "inprocess",
+        "runtime": {"python": ">=3.11", "entrypoint": "fixture:Plugin"},
+        "permissions": [],
+        "contributes": {
+            "windows": [{"id": "fixture-app.settings", "title": "Settings",
+                         "body": {"type": "component"}}],
+            "settings_panels": [{"id": "fixture-app.settings",
+                                 "window": "fixture-app.settings"}],
+            "frontend": frontend,
+        },
+    }
+    manifest_path = tmp_path / "aw-app.json"
+    manifest_path.write_text(json.dumps(manifest))
+    return manifest_path
+
+
+def test_component_settings_window_with_body_slot_is_accepted(tmp_path):
+    manifest_path = make_component_settings_app(
+        tmp_path, ["core.window.body:fixture-app.settings"])
+    result = run_validate(manifest_path)
+    assert result.returncode == 0, result.stderr
+
+
+def test_component_settings_window_without_body_slot_fails(tmp_path):
+    manifest_path = make_component_settings_app(tmp_path, [])
+    result = run_validate(manifest_path)
+    assert result.returncode == 1
+    assert "core.window.body:fixture-app.settings" in result.stderr

@@ -266,10 +266,12 @@ for panel in contributes.get("settings_panels", []) or []:
         continue
     if target not in window_ids:
         fail(f"settings_panel {panel['id']!r} points at unknown window {target!r}")
-    elif target not in declarative_window_ids:
+    elif target not in declarative_window_ids and (
+        f"core.window.body:{target}" not in (frontend.get("slots") or [])
+    ):
         fail(f"settings_panel {panel['id']!r} points at window {target!r}, which "
-             f"is not `declarative`. The Settings pane reads body.spec_data and "
-             f"will render EMPTY for a component/managed_app window.")
+             f"is not `declarative` and declares no `core.window.body:{target}` "
+             f"frontend slot, so the Settings pane would render EMPTY.")
 
 # ── report ──────────────────────────────────────────────────────────────────
 
